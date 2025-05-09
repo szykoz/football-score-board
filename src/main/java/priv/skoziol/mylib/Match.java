@@ -10,19 +10,6 @@ public class Match {
     private Integer awayTeamScore;
     private Boolean isOngoing;
 
-    public Match() {
-
-    }
-
-//    Match(String homeTeam, String awayTeam) {
-//        id = idSeq++;
-//        this.homeTeam = homeTeam;
-//        this.awayTeam = awayTeam;
-//        homeTeamScore = 0;
-//        awayTeamScore = 0;
-//        isOngoing = Boolean.TRUE;
-//    }
-
     public Long getId() {
         return id;
     }

@@ -9,8 +9,8 @@ public class MatchTestBuilder {
 
     private long id = matchId++;
     private Boolean isOngoing = Boolean.TRUE;
-    private String homeTeam = randomName();
-    private String awayTeam = randomName();
+    private String homeTeam = "";
+    private String awayTeam = "";
     private int homeTeamScore = 0;
     private int awayTeamScore = 0;
 
@@ -51,17 +51,5 @@ public class MatchTestBuilder {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-    private String randomName() {
-        String letters = "abcdefghijklmnopqrstuvwzyz";
-        Random random = new Random();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 5; i++) {
-            int index = random.nextInt(letters.length());
-            stringBuilder.append(letters.charAt(index));
-        }
-        return stringBuilder.toString();
     }
 }
