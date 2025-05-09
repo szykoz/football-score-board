@@ -1,4 +1,4 @@
-package priv.skoziol.match;
+package priv.skoziol.mylib;
 
 import java.lang.reflect.Field;
 import java.util.Random;
@@ -33,7 +33,7 @@ public class MatchTestBuilder {
 
     public Match build() {
         Match match = new Match();
-        setField(match, "matchId", id);
+        setField(match, "id", id);
         setField(match, "isOngoing", isOngoing);
         setField(match, "homeTeam", homeTeam);
         setField(match, "awayTeam", awayTeam);

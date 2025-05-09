@@ -1,21 +1,19 @@
-package priv.skoziol;
+package priv.skoziol.mylib;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import priv.skoziol.match.MatchTestBuilder;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-// Match:
-// id, homeTeamName, awayTeamName, homeTeamScore, awayTeamScore, isOngoing
-
 // Scoreboard is class for managing matches
 //    Scoreboard API:
 //      List<Match> getSummary() returns sorted matches
-//      Match startNewMatch(String homeTeam, String awayTeam) creates match and returns it
+//      Long startNewMatch(String homeTeam, String awayTeam) creates match and returns its id
 //      void updateMatch(int matchId, homeTeamScore, awayTeamScore); updates match score
 //      void endMatch(int matchId)
 
@@ -33,10 +31,11 @@ class ScoreboardTest {
         // Given
         Match expected = new MatchTestBuilder()
                 .withScore(0, 0)
+                .withName("home", "away")
                 .build();
 
         // When
-        underTest.startNewMatch();
+        Long matchId = underTest.startNewMatch("home", "away");
 
         // Then
         List<Match> summaryList = getMatches();
@@ -45,15 +44,23 @@ class ScoreboardTest {
 
         Match tested = summaryList.getFirst();
 
+        assertNotNull(matchId);
+
         assertTrue(tested.isOngoing());
 
-        assertEquals(expected, tested);
+        assertEquals(0, tested.getId());
+        assertEquals("home", tested.getHomeTeam());
+        assertEquals("away", tested.getAwayTeam());
+        assertEquals(0, tested.getHomeTeamScore());
+        assertEquals(0, tested.getAwayTeamScore());
+        assertEquals(true, tested.isOngoing());
     }
 
     @Test
     void canEndMatch() throws Exception {
         // Given
         Match newMatch = new MatchTestBuilder().build();
+        setMatches(newMatch);
 
         // When
         underTest.endMatch(newMatch.getId());
@@ -89,7 +96,7 @@ class ScoreboardTest {
         // When
         // Then
         assertThrows(ScoreUpdateNotAllowedException.class, () -> {
-            underTest.update(newMatch.getId(), 1, 0);
+            underTest.updateScore(newMatch.getId(), 1, 0);
         });
     }
 
@@ -130,7 +137,7 @@ class ScoreboardTest {
     }
 
     private List<Match> getMatches() throws NoSuchFieldException, IllegalAccessException {
-        Field field = Scoreboard.class.getDeclaredField("summaryList");
+        Field field = Scoreboard.class.getDeclaredField("matches");
         field.setAccessible(true);
         @SuppressWarnings("unchecked")
         List<Match> summaryList = (List<Match>) field.get(underTest);
@@ -138,11 +145,10 @@ class ScoreboardTest {
     }
 
     private void setMatches(Match... matches) throws NoSuchFieldException, IllegalAccessException {
-        Field field = Scoreboard.class.getDeclaredField("summaryList");
+        List<Match> mathesList = new ArrayList<>(Arrays.asList(matches));
+        Field field = Scoreboard.class.getDeclaredField("matches");
         field.setAccessible(true);
-        for (Match match : matches) {
-            field.set(underTest, match);
-        }
+        field.set(underTest, mathesList);
     }
 
 }
